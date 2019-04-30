@@ -11,6 +11,8 @@ import com.xia.flyrxbus.RxBus;
 import com.xia.flyrxbus.RxBusManager;
 import com.xia.flyrxbus.RxBusMessage;
 
+import org.jetbrains.annotations.NotNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class StickyTestActivity extends AppCompatActivity {
@@ -29,23 +31,23 @@ public class StickyTestActivity extends AppCompatActivity {
 
         tvSticky = findViewById(R.id.tv_sticky);
 
-        RxBus.getDefault().subscribeSticky(this, new RxBus.Callback<String>() {
+        RxBus.subscribeSticky(this, new RxBus.Callback<String>() {
             @Override
-            public void onEvent(String tag, String s) {
+            public void onEvent(@NotNull String tag, String s) {
                 tvSticky.setText(Config.appendMsg("sticky without " + s));
             }
         });
 
-        RxBus.getDefault().subscribeSticky(this, "my tag", new RxBus.Callback<String>() {
+        RxBus.subscribeSticky(this, "my tag", new RxBus.Callback<String>() {
             @Override
-            public void onEvent(String tag, String s) {
+            public void onEvent(@NotNull String tag, String s) {
                 tvSticky.setText(Config.appendMsg("sticky with " + s));
             }
         });
 
         RxBusManager.subscribeStickyWithTags(this, new RxBus.Callback<RxBusMessage>() {
             @Override
-            public void onEvent(String tag, RxBusMessage rxBusMessage) {
+            public void onEvent(@NotNull String tag, RxBusMessage rxBusMessage) {
                 Log.e("weixi", "tag:" + tag + "    obj:" + rxBusMessage.mObj);
                 if (rxBusMessage.mObj instanceof TestEvent) {
                     final TestEvent testEvent = (TestEvent) rxBusMessage.mObj;
@@ -57,17 +59,17 @@ public class StickyTestActivity extends AppCompatActivity {
 
     public void postWithoutTag(View view) {
         Config.restoreMsg();
-        RxBus.getDefault().post("tag");
+        RxBus.post("tag");
     }
 
     public void postWithTag(View view) {
         Config.restoreMsg();
-        RxBus.getDefault().post("tag", "my tag");
+        RxBus.post("tag", "my tag");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RxBus.getDefault().unregister(this);
+        RxBus.unregister(this);
     }
 }
