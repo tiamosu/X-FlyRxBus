@@ -18,7 +18,7 @@ allprojects {
 ### fly-rxbus
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flyrxbus/images/download.svg) ](https://bintray.com/weixia/maven/x-flyrxbus/_latestVersion)
 ```groovy
-compile 'me.xia:x-flyrxbus:1.0.0'
+compile 'me.xia:x-flyrxbus:1.0.1'
 ```
 
 ## How to use
@@ -33,7 +33,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
           setContentView(R.layout.activity_main);
 
           // 注册 String 类型事件
-          RxBus.getDefault().subscribe(this, new RxBus.Callback<String>() {
+          RxBus.subscribe(this, new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -41,7 +41,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
           });
 
           // 注册带 tag 为 "my tag" 的 String 类型事件
-          RxBus.getDefault().subscribe(this, "my tag", new RxBus.Callback<String>() {
+          RxBus.subscribe(this, "my tag", new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -65,7 +65,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
       protected void onDestroy() {
           super.onDestroy();
           // 注销
-          RxBus.getDefault().unregister(this);
+          RxBus.unregister(this);
       }
   }
 ```
@@ -73,15 +73,15 @@ compile 'me.xia:x-flyrxbus:1.0.0'
 2. 发送事件
 ```java
   // 发送 String 类型事件
-  RxBus.getDefault().post("without tag");
+  RxBus.post("without tag");
 
   // 发送带 tag 为 "my tag" 的 String 类型事件
-  RxBus.getDefault().post("with tag", "my tag");
+  RxBus.post("with tag", "my tag");
 
   //发送带多个 tag 的类型事件
-  RxBus.getDefault().post(new RxBusMessage("1"), "myTag1");
-  RxBus.getDefault().post(new RxBusMessage(0.001), "myTag2");
-  RxBus.getDefault().post(new RxBusMessage(new TestEvent("hello")), "myTag3");
+  RxBus.post(new RxBusMessage("1"), "myTag1");
+  RxBus.post(new RxBusMessage(0.001), "myTag2");
+  RxBus.post(new RxBusMessage(new TestEvent("hello")), "myTag3");
 ```
 
 ### 粘性事件（也就是先发送事件，在之后注册的时候便会收到之前发送的事件）
@@ -94,7 +94,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
           setContentView(R.layout.activity_main);
 
           // 注册 String 类型事件
-          RxBus.getDefault().subscribeSticky(this, new RxBus.Callback<String>() {
+          RxBus.subscribeSticky(this, new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -102,7 +102,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
           });
 
           // 注册带 tag 为 "my tag" 的 String 类型事件
-          RxBus.getDefault().subscribeSticky(this, "my tag", new RxBus.Callback<String>() {
+          RxBus.subscribeSticky(this, "my tag", new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -126,7 +126,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
       protected void onDestroy() {
           super.onDestroy();
           // 注销
-          RxBus.getDefault().unregister(this);
+          RxBus.unregister(this);
       }
   }
 ```
@@ -134,15 +134,15 @@ compile 'me.xia:x-flyrxbus:1.0.0'
 2. 发送事件
 ```java
   // 发送 String 类型的粘性事件
-  RxBus.getDefault().postSticky("without tag");
+  RxBus.postSticky("without tag");
 
   // 发送带 tag 为 "my tag" 的 String 类型的粘性事件
-  RxBus.getDefault().postSticky("with tag", "my tag");
+  RxBus.postSticky("with tag", "my tag");
 
   //发送带多个 tag 的类型的粘性事件
-  RxBus.getDefault().post(new RxBusMessage("1"), "myTag4");
-  RxBus.getDefault().post(new RxBusMessage(0.001), "myTag5");
-  RxBus.getDefault().post(new RxBusMessage(new TestEvent("hello")), "myTag6");
+  RxBus.post(new RxBusMessage("1"), "myTag4");
+  RxBus.post(new RxBusMessage(0.001), "myTag5");
+  RxBus.post(new RxBusMessage(new TestEvent("hello")), "myTag6");
 ```
 
 ## Nice wrap
@@ -150,76 +150,76 @@ compile 'me.xia:x-flyrxbus:1.0.0'
 public final class RxBusManager {
 
     public static void post(final Object event) {
-        RxBus.getDefault().post(event);
+        RxBus.post(event);
     }
 
     public static void post(final Object event, final String tag) {
-        RxBus.getDefault().post(event, tag);
+        RxBus.post(event, tag);
     }
 
     public static void postSticky(final Object event) {
-        RxBus.getDefault().postSticky(event);
+        RxBus.postSticky(event);
     }
 
     public static void postSticky(final Object event, final String tag) {
-        RxBus.getDefault().postSticky(event, tag);
+        RxBus.postSticky(event, tag);
     }
 
     public static void removeSticky(final Object event) {
-        RxBus.getDefault().removeSticky(event);
+        RxBus.removeSticky(event);
     }
 
     public static void removeSticky(final Object event,
                                     final String tag) {
-        RxBus.getDefault().removeSticky(event, tag);
+        RxBus.removeSticky(event, tag);
     }
 
     public static <T> void subscribe(final Object subscriber,
                                      final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribe(subscriber, callback);
+        RxBus.subscribe(subscriber, callback);
     }
 
     public static <T> void subscribe(final Object subscriber,
                                      final Scheduler scheduler,
                                      final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribe(subscriber, scheduler, callback);
+        RxBus.subscribe(subscriber, scheduler, callback);
     }
 
     public static <T> void subscribe(final Object subscriber,
                                      final String tag,
                                      final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribe(subscriber, tag, callback);
+        RxBus.subscribe(subscriber, tag, callback);
     }
 
     public static <T> void subscribe(final Object subscriber,
                                      final String tag,
                                      final Scheduler scheduler,
                                      final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribe(subscriber, tag, scheduler, callback);
+        RxBus.subscribe(subscriber, tag, scheduler, callback);
     }
 
     public static <T> void subscribeSticky(final Object subscriber,
                                            final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribeSticky(subscriber, callback);
+        RxBus.subscribeSticky(subscriber, callback);
     }
 
     public static <T> void subscribeSticky(final Object subscriber,
                                            final Scheduler scheduler,
                                            final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribeSticky(subscriber, scheduler, callback);
+        RxBus.subscribeSticky(subscriber, scheduler, callback);
     }
 
     public static <T> void subscribeSticky(final Object subscriber,
                                            final String tag,
                                            final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribeSticky(subscriber, tag, callback);
+        RxBus.subscribeSticky(subscriber, tag, callback);
     }
 
     public static <T> void subscribeSticky(final Object subscriber,
                                            final String tag,
                                            final Scheduler scheduler,
                                            final RxBus.Callback<T> callback) {
-        RxBus.getDefault().subscribeSticky(subscriber, tag, scheduler, callback);
+        RxBus.subscribeSticky(subscriber, tag, scheduler, callback);
     }
 
     public static <T> void subscribeWithTags(final Object subscriber,
@@ -236,7 +236,7 @@ public final class RxBusManager {
             throw new RuntimeException("Tags is empty,you should set the tags");
         }
         for (String tag : tags) {
-            RxBus.getDefault().subscribe(subscriber, tag, scheduler, callback);
+            RxBus.subscribe(subscriber, tag, scheduler, callback);
         }
     }
 
@@ -254,12 +254,12 @@ public final class RxBusManager {
             throw new RuntimeException("Tags is empty,you should set the tags");
         }
         for (String tag : tags) {
-            RxBus.getDefault().subscribeSticky(subscriber, tag, scheduler, callback);
+            RxBus.subscribeSticky(subscriber, tag, scheduler, callback);
         }
     }
 
     public static void unregister(final Object subscriber) {
-        RxBus.getDefault().unregister(subscriber);
+        RxBus.unregister(subscriber);
     }
 }
 ```
