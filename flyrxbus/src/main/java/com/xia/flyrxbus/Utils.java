@@ -51,10 +51,17 @@ final class Utils {
         } else {
             type = callback.getClass().getGenericSuperclass();
         }
-        type = ((ParameterizedType) type).getActualTypeArguments()[0];
+        if (type instanceof ParameterizedType) {
+            final ParameterizedType parameterizedType = (ParameterizedType) type;
+            type = parameterizedType.getActualTypeArguments()[0];
+        }
         while (type instanceof ParameterizedType) {
             type = ((ParameterizedType) type).getRawType();
         }
+        if (type == null) {
+            return null;
+        }
+
         String className = type.toString();
         if (className.startsWith("class ")) {
             className = className.substring(6);
@@ -74,25 +81,24 @@ final class Utils {
         if (obj == null) {
             return null;
         }
-        Class objClass = obj.getClass();
+        final Class objClass = obj.getClass();
         if (objClass.isAnonymousClass() || objClass.isSynthetic()) {
             final Type[] genericInterfaces = objClass.getGenericInterfaces();
-            String className;
+            Type type;
             // interface
             if (genericInterfaces.length == 1) {
-                Type type = genericInterfaces[0];
-                while (type instanceof ParameterizedType) {
-                    type = ((ParameterizedType) type).getRawType();
-                }
-                className = type.toString();
+                type = genericInterfaces[0];
             } else {// abstract class or lambda
-                Type type = objClass.getGenericSuperclass();
-                while (type instanceof ParameterizedType) {
-                    type = ((ParameterizedType) type).getRawType();
-                }
-                className = type.toString();
+                type = objClass.getGenericSuperclass();
+            }
+            while (type instanceof ParameterizedType) {
+                type = ((ParameterizedType) type).getRawType();
+            }
+            if (type == null) {
+                return null;
             }
 
+            String className = type.toString();
             if (className.startsWith("class ")) {
                 className = className.substring(6);
             } else if (className.startsWith("interface ")) {
