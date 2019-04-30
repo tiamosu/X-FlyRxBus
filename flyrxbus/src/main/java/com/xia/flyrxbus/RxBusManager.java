@@ -21,6 +21,15 @@ public final class RxBusManager {
         RxBus.getDefault().postSticky(event, tag);
     }
 
+    public static void removeSticky(final Object event) {
+        RxBus.getDefault().removeSticky(event);
+    }
+
+    public static void removeSticky(final Object event,
+                                    final String tag) {
+        RxBus.getDefault().removeSticky(event, tag);
+    }
+
     public static <T> void subscribe(final Object subscriber,
                                      final RxBus.Callback<T> callback) {
         RxBus.getDefault().subscribe(subscriber, callback);
