@@ -26,7 +26,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
 ### 非粘性事件
 1. 注册事件
 ```java
-  public class RxBusActivity extends AppCompatActivity {
+  public class YourActivity extends Activity {
       @Override
       protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
@@ -85,21 +85,7 @@ compile 'me.xia:x-flyrxbus:1.0.0'
 ```
 
 ### 粘性事件（也就是先发送事件，在之后注册的时候便会收到之前发送的事件）
-1. 发送事件
-```java
-  // 发送 String 类型的粘性事件
-  RxBus.getDefault().postSticky("without tag");
-
-  // 发送带 tag 为 "my tag" 的 String 类型的粘性事件
-  RxBus.getDefault().postSticky("with tag", "my tag");
-
-  //发送带多个 tag 的类型的粘性事件
-  RxBus.getDefault().post(new RxBusMessage("1"), "myTag4");
-  RxBus.getDefault().post(new RxBusMessage(0.001), "myTag5");
-  RxBus.getDefault().post(new RxBusMessage(new TestEvent("hello")), "myTag6");
-```
-
-2. 注册事件
+1. 注册事件
 ```java
   public class YourActivity extends Activity {
       @Override
@@ -143,6 +129,20 @@ compile 'me.xia:x-flyrxbus:1.0.0'
           RxBus.getDefault().unregister(this);
       }
   }
+```
+
+2. 发送事件
+```java
+  // 发送 String 类型的粘性事件
+  RxBus.getDefault().postSticky("without tag");
+
+  // 发送带 tag 为 "my tag" 的 String 类型的粘性事件
+  RxBus.getDefault().postSticky("with tag", "my tag");
+
+  //发送带多个 tag 的类型的粘性事件
+  RxBus.getDefault().post(new RxBusMessage("1"), "myTag4");
+  RxBus.getDefault().post(new RxBusMessage(0.001), "myTag5");
+  RxBus.getDefault().post(new RxBusMessage(new TestEvent("hello")), "myTag6");
 ```
 
 ## Nice wrap
