@@ -22,8 +22,8 @@ final class CacheUtils {
         private static final CacheUtils CACHE_UTILS = new CacheUtils();
     }
 
-    public void addStickyEvent(final TagMessage stickyEvent) {
-        final Class eventType = stickyEvent.getEventType();
+    public void addStickyEvent(final Object event, final String tag) {
+        final Class eventType = Utils.getClassFromObject(event);
         if (eventType == null) {
             return;
         }
@@ -31,16 +31,42 @@ final class CacheUtils {
             List<TagMessage> stickyEvents = stickyEventsMap.get(eventType);
             if (stickyEvents == null) {
                 stickyEvents = new ArrayList<>();
-                stickyEvents.add(stickyEvent);
+                stickyEvents.add(new TagMessage(event, tag));
                 stickyEventsMap.put(eventType, stickyEvents);
             } else {
-                final int indexOf = stickyEvents.indexOf(stickyEvent);
-                if (indexOf == -1) {
-                    // 不存在直接插入
-                    stickyEvents.add(stickyEvent);
-                } else {// 存在则覆盖
-                    stickyEvents.set(indexOf, stickyEvent);
+                final int size = stickyEvents.size();
+                for (int i = size - 1; i >= 0; --i) {
+                    final TagMessage tmp = stickyEvents.get(i);
+                    if (tmp.isSameType(eventType, tag)) {
+                        Utils.logW("The sticky event already added.");
+                        return;
+                    }
                 }
+                stickyEvents.add(new TagMessage(event, tag));
+            }
+        }
+    }
+
+    public void removeStickyEvent(final Object event, final String tag) {
+        final Class eventType = Utils.getClassFromObject(event);
+        if (eventType == null) {
+            return;
+        }
+        synchronized (stickyEventsMap) {
+            List<TagMessage> stickyEvents = stickyEventsMap.get(eventType);
+            if (stickyEvents == null) {
+                return;
+            }
+            final int size = stickyEvents.size();
+            for (int i = size - 1; i >= 0; --i) {
+                final TagMessage stickyEvent = stickyEvents.get(i);
+                if (stickyEvent.isSameType(eventType, tag)) {
+                    stickyEvents.remove(i);
+                    break;
+                }
+            }
+            if (stickyEvents.size() == 0) {
+                stickyEventsMap.remove(eventType);
             }
         }
     }
