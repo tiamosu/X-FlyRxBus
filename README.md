@@ -19,7 +19,7 @@ compile 'me.xia:x-flyrxbus:1.0.1'
           setContentView(R.layout.activity_main);
 
           // 注册 String 类型事件
-          RxBus.subscribe(this, new RxBus.Callback<String>() {
+          RxBusManager.subscribe(this, new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -27,7 +27,7 @@ compile 'me.xia:x-flyrxbus:1.0.1'
           });
 
           // 注册带 tag 为 "my tag" 的 String 类型事件
-          RxBus.subscribe(this, "my tag", new RxBus.Callback<String>() {
+          RxBusManager.subscribe(this, "my tag", new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -51,7 +51,7 @@ compile 'me.xia:x-flyrxbus:1.0.1'
       protected void onDestroy() {
           super.onDestroy();
           // 注销
-          RxBus.unregister(this);
+          RxBusManager.unregister(this);
       }
   }
 ```
@@ -59,15 +59,15 @@ compile 'me.xia:x-flyrxbus:1.0.1'
 2. 发送事件
 ```java
   // 发送 String 类型事件
-  RxBus.post("without tag");
+  RxBusManager.post("without tag");
 
   // 发送带 tag 为 "my tag" 的 String 类型事件
-  RxBus.post("with tag", "my tag");
+  RxBusManager.post("with tag", "my tag");
 
   //发送带多个 tag 的类型事件
-  RxBus.post(new RxBusMessage("1"), "myTag1");
-  RxBus.post(new RxBusMessage(0.001), "myTag2");
-  RxBus.post(new RxBusMessage(new TestEvent("hello")), "myTag3");
+  RxBusManager.post(new RxBusMessage("1"), "myTag1");
+  RxBusManager.post(new RxBusMessage(0.001), "myTag2");
+  RxBusManager.post(new RxBusMessage(new TestEvent("hello")), "myTag3");
 ```
 
 ### 粘性事件（也就是先发送事件，在之后注册的时候便会收到之前发送的事件）
@@ -80,7 +80,7 @@ compile 'me.xia:x-flyrxbus:1.0.1'
           setContentView(R.layout.activity_main);
 
           // 注册 String 类型事件
-          RxBus.subscribeSticky(this, new RxBus.Callback<String>() {
+          RxBusManager.subscribeSticky(this, new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -88,7 +88,7 @@ compile 'me.xia:x-flyrxbus:1.0.1'
           });
 
           // 注册带 tag 为 "my tag" 的 String 类型事件
-          RxBus.subscribeSticky(this, "my tag", new RxBus.Callback<String>() {
+          RxBusManager.subscribeSticky(this, "my tag", new RxBus.Callback<String>() {
               @Override
               public void onEvent(String s) {
                   Log.e("eventTag", s);
@@ -112,7 +112,7 @@ compile 'me.xia:x-flyrxbus:1.0.1'
       protected void onDestroy() {
           super.onDestroy();
           // 注销
-          RxBus.unregister(this);
+          RxBusManager.unregister(this);
       }
   }
 ```
@@ -120,15 +120,15 @@ compile 'me.xia:x-flyrxbus:1.0.1'
 2. 发送事件
 ```java
   // 发送 String 类型的粘性事件
-  RxBus.postSticky("without tag");
+  RxBusManager.postSticky("without tag");
 
   // 发送带 tag 为 "my tag" 的 String 类型的粘性事件
-  RxBus.postSticky("with tag", "my tag");
+  RxBusManager.postSticky("with tag", "my tag");
 
   //发送带多个 tag 的类型的粘性事件
-  RxBus.post(new RxBusMessage("1"), "myTag4");
-  RxBus.post(new RxBusMessage(0.001), "myTag5");
-  RxBus.post(new RxBusMessage(new TestEvent("hello")), "myTag6");
+  RxBusManager.post(new RxBusMessage("1"), "myTag4");
+  RxBusManager.post(new RxBusMessage(0.001), "myTag5");
+  RxBusManager.post(new RxBusMessage(new TestEvent("hello")), "myTag6");
 ```
 
 ## Nice wrap
