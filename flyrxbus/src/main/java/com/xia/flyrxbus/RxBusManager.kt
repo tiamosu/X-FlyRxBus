@@ -134,7 +134,7 @@ object RxBusManager {
     }
 
     @JvmStatic
-    fun unregister(@NonNull subscriber: Any) {
+    fun unregister(subscriber: Any?) {
         RxBus.unregister(subscriber)
     }
 }

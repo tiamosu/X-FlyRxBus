@@ -36,7 +36,7 @@ object RxBusManager {
         RxBus.postSticky(event, MY_TAG)
     }
 
-    fun unregisterRxBusManagerActivity(activity: RxBusManagerActivity) {
+    fun unregisterRxBusManagerActivity(activity: RxBusManagerActivity?) {
         RxBus.unregister(activity)
     }
 }

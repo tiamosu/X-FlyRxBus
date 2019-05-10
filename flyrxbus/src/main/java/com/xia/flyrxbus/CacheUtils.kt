@@ -74,7 +74,8 @@ object CacheUtils {
     }
 
     @JvmStatic
-    fun removeDisposables(@NonNull subscriber: Any) {
+    fun removeDisposables(subscriber: Any?) {
+        subscriber ?: return
         val disposables = DISPOSABLE_MAP[subscriber] ?: return
         for (disposable in disposables) {
             if (!disposable.isDisposed) {

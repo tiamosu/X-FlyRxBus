@@ -152,7 +152,7 @@ object RxBus {
     }
 
     @JvmStatic
-    fun unregister(@NonNull subscriber: Any) {
+    fun unregister(subscriber: Any?) {
         CacheUtils.removeDisposables(subscriber)
     }
 

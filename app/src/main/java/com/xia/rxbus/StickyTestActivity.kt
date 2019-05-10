@@ -6,12 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
-
+import androidx.appcompat.app.AppCompatActivity
 import com.xia.flyrxbus.RxBus
 import com.xia.flyrxbus.RxBusManager
 import com.xia.flyrxbus.RxBusMessage
-
-import androidx.appcompat.app.AppCompatActivity
 
 class StickyTestActivity : AppCompatActivity() {
 
@@ -23,13 +21,13 @@ class StickyTestActivity : AppCompatActivity() {
 
         mTvSticky = findViewById(R.id.tv_sticky)
 
-        RxBus.subscribeSticky(this, object : RxBus.Callback<String>() {
+        RxBusManager.subscribeSticky(this, object : RxBus.Callback<String>() {
             override fun onEvent(tag: String, s: String) {
                 mTvSticky!!.text = Config.appendMsg("sticky without $s")
             }
         })
 
-        RxBus.subscribeSticky(this, "my tag", object : RxBus.Callback<String>() {
+        RxBusManager.subscribeSticky(this, "my tag", object : RxBus.Callback<String>() {
             override fun onEvent(tag: String, s: String) {
                 mTvSticky!!.text = Config.appendMsg("sticky with $s")
             }
@@ -37,10 +35,18 @@ class StickyTestActivity : AppCompatActivity() {
 
         RxBusManager.subscribeStickyWithTags(this, object : RxBus.Callback<RxBusMessage>() {
             override fun onEvent(tag: String, rxBusMessage: RxBusMessage) {
-                Log.e("weixi", "tag:" + tag + "    obj:" + rxBusMessage.mObj)
-                if (rxBusMessage.mObj is TestEvent) {
-                    val testEvent = rxBusMessage.mObj as TestEvent
-                    Log.e("weixi", "onEvent: " + testEvent.mString)
+                if ("myTag4" == tag) {
+                    Log.e("weixi", "tag:" + tag + "    obj:" + rxBusMessage.mObj)
+                }
+                if ("myTag5" == tag) {
+                    Log.e("weixi", "tag:" + tag + "    obj:" + rxBusMessage.mObj)
+                }
+                if ("myTag6" == tag) {
+                    Log.e("weixi", "tag:" + tag + "    obj:" + rxBusMessage.mObj)
+                    if (rxBusMessage.mObj is TestEvent) {
+                        val testEvent = rxBusMessage.mObj as TestEvent
+                        Log.e("weixi", "tag:" + tag + "    onEvent: " + testEvent.mString)
+                    }
                 }
             }
         }, "myTag4", "myTag5", "myTag6")
@@ -48,17 +54,17 @@ class StickyTestActivity : AppCompatActivity() {
 
     fun postWithoutTag(view: View) {
         Config.restoreMsg()
-        RxBus.post("tag")
+        RxBusManager.post("tag")
     }
 
     fun postWithTag(view: View) {
         Config.restoreMsg()
-        RxBus.post("tag", "my tag")
+        RxBusManager.post("tag", "my tag")
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        RxBus.unregister(this)
+        RxBusManager.unregister(this)
     }
 
     companion object {
