@@ -4,7 +4,7 @@
 ### fly-rxbus
 [ ![Download](https://api.bintray.com/packages/weixia/maven/x-flyrxbus/images/download.svg) ](https://bintray.com/weixia/maven/x-flyrxbus/_latestVersion)
 ```groovy
-compile 'me.xia:x-flyrxbus:1.0.1'
+compile 'me.xia:x-flyrxbus:1.0.2'
 ```
 
 ## How to use
