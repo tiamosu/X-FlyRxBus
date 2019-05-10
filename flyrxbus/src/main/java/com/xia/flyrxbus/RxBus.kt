@@ -132,11 +132,12 @@ object RxBus {
             } else {
                 Utils.logW("sticky event is empty.")
             }
+        } else {
+            val disposable = FlowableUtils.subscribe(
+                    toFlowable(typeClass, tag, scheduler), onNext, ON_ERROR
+            )
+            CacheUtils.addDisposable(subscriber, disposable)
         }
-        val disposable = FlowableUtils.subscribe(
-                toFlowable(typeClass, tag, scheduler), onNext, ON_ERROR
-        )
-        CacheUtils.addDisposable(subscriber, disposable)
     }
 
     private fun <T> toFlowable(@NonNull eventType: Class<T>?,

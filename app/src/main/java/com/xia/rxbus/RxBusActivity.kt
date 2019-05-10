@@ -64,7 +64,6 @@ class RxBusActivity : AppCompatActivity() {
     fun postWithTag(view: View) {
         Config.restoreMsg()
         RxBusManager.post("with tag", "my tag")
-
         RxBusManager.post(RxBusMessage("1"), "myTag1")
         RxBusManager.post(RxBusMessage(0.001), "myTag2")
         RxBusManager.post(RxBusMessage(TestEvent("hello")), "myTag3")
@@ -79,7 +78,6 @@ class RxBusActivity : AppCompatActivity() {
     fun postStickyWithTag(view: View) {
         Config.restoreMsg()
         RxBusManager.postSticky("tag", "my tag")
-
         RxBusManager.postSticky(RxBusMessage("1"), "myTag4")
         RxBusManager.postSticky(RxBusMessage(0.001), "myTag5")
         RxBusManager.postSticky(RxBusMessage(TestEvent("hello")), "myTag6")

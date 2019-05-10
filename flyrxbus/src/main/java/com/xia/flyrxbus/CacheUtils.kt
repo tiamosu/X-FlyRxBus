@@ -57,6 +57,7 @@ object CacheUtils {
             val stickyEvent = stickyEvents[i]
             if (stickyEvent.isSameType(eventType, tag)) {
                 res = stickyEvents[i]
+                stickyEvents.removeAt(i)
                 break
             }
         }
