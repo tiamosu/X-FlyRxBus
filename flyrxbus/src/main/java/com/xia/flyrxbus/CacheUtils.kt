@@ -13,77 +13,86 @@ object CacheUtils {
     @JvmStatic
     fun addStickyEvent(@NonNull event: Any, @NonNull tag: String) {
         val eventType = Utils.getClassFromObject(event) ?: return
-        var stickyEvents: MutableList<TagMessage>? = STICKY_EVENT_MAP[eventType]
-        if (stickyEvents == null) {
-            stickyEvents = ArrayList()
-            stickyEvents.add(TagMessage(event, tag))
-            STICKY_EVENT_MAP[eventType] = stickyEvents
-        } else {
-            val size = stickyEvents.size
-            for (i in size - 1 downTo 0) {
-                val tmp = stickyEvents[i]
-                if (tmp.isSameType(eventType, tag)) {
-                    Utils.logW("The sticky event already added.")
-                    return
+        synchronized(STICKY_EVENT_MAP) {
+            var stickyEvents: MutableList<TagMessage>? = STICKY_EVENT_MAP[eventType]
+            if (stickyEvents == null) {
+                stickyEvents = ArrayList()
+                stickyEvents.add(TagMessage(event, tag))
+                STICKY_EVENT_MAP[eventType] = stickyEvents
+            } else {
+                val size = stickyEvents.size
+                for (i in size - 1 downTo 0) {
+                    val tmp = stickyEvents[i]
+                    if (tmp.isSameType(eventType, tag)) {
+                        Utils.logW("The sticky event already added.")
+                        return
+                    }
                 }
+                stickyEvents.add(TagMessage(event, tag))
             }
-            stickyEvents.add(TagMessage(event, tag))
         }
     }
 
     @JvmStatic
     fun removeStickyEvent(@NonNull event: Any, @NonNull tag: String) {
         val eventType = Utils.getClassFromObject(event) ?: return
-        val stickyEvents = STICKY_EVENT_MAP[eventType] ?: return
-        val size = stickyEvents.size
-        for (i in size - 1 downTo 0) {
-            val stickyEvent = stickyEvents[i]
-            if (stickyEvent.isSameType(eventType, tag)) {
-                stickyEvents.removeAt(i)
-                break
+        synchronized(STICKY_EVENT_MAP) {
+            val stickyEvents = STICKY_EVENT_MAP[eventType] ?: return
+            val size = stickyEvents.size
+            for (i in size - 1 downTo 0) {
+                val stickyEvent = stickyEvents[i]
+                if (stickyEvent.isSameType(eventType, tag)) {
+                    stickyEvents.removeAt(i)
+                    break
+                }
             }
-        }
-        if (stickyEvents.size == 0) {
-            STICKY_EVENT_MAP.remove(eventType)
+            if (stickyEvents.size == 0) {
+                STICKY_EVENT_MAP.remove(eventType)
+            }
         }
     }
 
     @JvmStatic
     fun findStickyEvent(@NonNull eventType: Class<*>, @NonNull tag: String): TagMessage? {
-        val stickyEvents = STICKY_EVENT_MAP[eventType] ?: return null
-        val size = stickyEvents.size
-        var res: TagMessage? = null
-        for (i in size - 1 downTo 0) {
-            val stickyEvent = stickyEvents[i]
-            if (stickyEvent.isSameType(eventType, tag)) {
-                res = stickyEvents[i]
-                stickyEvents.removeAt(i)
-                break
+        synchronized(STICKY_EVENT_MAP) {
+            val stickyEvents = STICKY_EVENT_MAP[eventType] ?: return null
+            val size = stickyEvents.size
+            var res: TagMessage? = null
+            for (i in size - 1 downTo 0) {
+                val stickyEvent = stickyEvents[i]
+                if (stickyEvent.isSameType(eventType, tag)) {
+                    res = stickyEvents[i]
+                    break
+                }
             }
+            return res
         }
-        return res
     }
 
     @JvmStatic
     fun addDisposable(@NonNull subscriber: Any, disposable: Disposable) {
-        var list: MutableList<Disposable>? = DISPOSABLE_MAP[subscriber]
-        if (list == null) {
-            list = ArrayList()
-            DISPOSABLE_MAP[subscriber] = list
+        synchronized(DISPOSABLE_MAP) {
+            var list: MutableList<Disposable>? = DISPOSABLE_MAP[subscriber]
+            if (list == null) {
+                list = ArrayList()
+                DISPOSABLE_MAP[subscriber] = list
+            }
+            list.add(disposable)
         }
-        list.add(disposable)
     }
 
     @JvmStatic
     fun removeDisposables(subscriber: Any?) {
         subscriber ?: return
-        val disposables = DISPOSABLE_MAP[subscriber] ?: return
-        for (disposable in disposables) {
-            if (!disposable.isDisposed) {
-                disposable.dispose()
+        synchronized(DISPOSABLE_MAP) {
+            val disposables = DISPOSABLE_MAP[subscriber] ?: return
+            for (disposable in disposables) {
+                if (!disposable.isDisposed) {
+                    disposable.dispose()
+                }
             }
+            disposables.clear()
+            DISPOSABLE_MAP.remove(subscriber)
         }
-        disposables.clear()
-        DISPOSABLE_MAP.remove(subscriber)
     }
 }
