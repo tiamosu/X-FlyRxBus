@@ -19,8 +19,7 @@ object Utils {
             callback.javaClass.genericSuperclass
         }
         if (type is ParameterizedType) {
-            val parameterizedType = type as ParameterizedType?
-            type = parameterizedType?.actualTypeArguments?.get(0)
+            type = type.actualTypeArguments[0]
         }
         while (type is ParameterizedType) {
             type = type.rawType
