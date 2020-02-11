@@ -2,12 +2,12 @@ package com.xia.rxbus
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.xia.flyrxbus.RxBus
 import com.xia.flyrxbus.RxBusManager
 import com.xia.flyrxbus.RxBusMessage
+import kotlinx.android.synthetic.main.activity_main.*
 
 class RxBusActivity : AppCompatActivity() {
 
@@ -49,43 +49,43 @@ class RxBusActivity : AppCompatActivity() {
                 }
             }
         }, "myTag1", "myTag2", "myTag3")
+
+        btn_post_without_tag.setOnClickListener {
+            Config.restoreMsg()
+            RxBusManager.post("tag")
+        }
+
+        btn_post_with_tag.setOnClickListener {
+            Config.restoreMsg()
+            RxBusManager.post("with tag", "my tag")
+            RxBusManager.post(RxBusMessage("1"), "myTag1")
+            RxBusManager.post(RxBusMessage(0.001), "myTag2")
+            RxBusManager.post(RxBusMessage(TestEvent("hello")), "myTag3")
+        }
+
+        btn_post_sticky_without_tag.setOnClickListener {
+            Config.restoreMsg()
+            RxBusManager.postSticky("tag")
+            StickyTestActivity.start(this)
+        }
+
+        btn_post_sticky_with_tag.setOnClickListener {
+            Config.restoreMsg()
+            RxBusManager.postSticky("tag", "my tag")
+            RxBusManager.postSticky(RxBusMessage("1"), "myTag4")
+            RxBusManager.postSticky(RxBusMessage(0.001), "myTag5")
+            RxBusManager.postSticky(RxBusMessage(TestEvent("hello")), "myTag6")
+            StickyTestActivity.start(this)
+        }
+
+        btn_use_manager.setOnClickListener {
+            RxBusManagerActivity.start(this)
+            finish()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         RxBusManager.unregister(this)
-    }
-
-    fun postWithoutTag(view: View) {
-        Config.restoreMsg()
-        RxBusManager.post("tag")
-    }
-
-    fun postWithTag(view: View) {
-        Config.restoreMsg()
-        RxBusManager.post("with tag", "my tag")
-        RxBusManager.post(RxBusMessage("1"), "myTag1")
-        RxBusManager.post(RxBusMessage(0.001), "myTag2")
-        RxBusManager.post(RxBusMessage(TestEvent("hello")), "myTag3")
-    }
-
-    fun postStickyWithoutTag(view: View) {
-        Config.restoreMsg()
-        RxBusManager.postSticky("tag")
-        StickyTestActivity.start(this)
-    }
-
-    fun postStickyWithTag(view: View) {
-        Config.restoreMsg()
-        RxBusManager.postSticky("tag", "my tag")
-        RxBusManager.postSticky(RxBusMessage("1"), "myTag4")
-        RxBusManager.postSticky(RxBusMessage(0.001), "myTag5")
-        RxBusManager.postSticky(RxBusMessage(TestEvent("hello")), "myTag6")
-        StickyTestActivity.start(this)
-    }
-
-    fun useManager(view: View) {
-        RxBusManagerActivity.start(this)
-        finish()
     }
 }

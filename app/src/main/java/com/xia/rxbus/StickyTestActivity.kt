@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.xia.flyrxbus.RxBus
 import com.xia.flyrxbus.RxBusManager
 import com.xia.flyrxbus.RxBusMessage
+import kotlinx.android.synthetic.main.activity_sticky_test.*
 
 class StickyTestActivity : AppCompatActivity() {
 
@@ -50,16 +50,16 @@ class StickyTestActivity : AppCompatActivity() {
                 }
             }
         }, "myTag4", "myTag5", "myTag6")
-    }
 
-    fun postWithoutTag(view: View) {
-        Config.restoreMsg()
-        RxBusManager.post("tag")
-    }
+        btn_post_without_tag.setOnClickListener {
+            Config.restoreMsg()
+            RxBusManager.post("tag")
+        }
 
-    fun postWithTag(view: View) {
-        Config.restoreMsg()
-        RxBusManager.post("tag", "my tag")
+        btn_post_with_tag.setOnClickListener {
+            Config.restoreMsg()
+            RxBusManager.post("tag", "my tag")
+        }
     }
 
     override fun onDestroy() {
